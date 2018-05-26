@@ -1,0 +1,159 @@
+参考文章：https://www.zfl9.com/ss-redir.html
+                  https://github.com/zfl9/ss-tproxy
+
+操作系统：CentOS-7-x86_64-Minimal-1611.iso (7.3.1611)
+http://vault.centos.org/7.3.1611/isos/x86_64/CentOS-7-x86_64-Minimal-1611.iso
+
+环境：
+ss-redir 监听 0.0.0.0:60080/tcp&udp；
+ss-tunnel 监听 0.0.0.0:60053/tcp&udp，ss-tunnel 的上游 DNS 设置为 8.8.8.8:53/udp；
+dns-forwarder 监听 0.0.0.0:65300/udp，dns-forwarder 的上游 DNS 设置为 8.8.8.8:53/tcp；
+chinadns 监听 0.0.0.0:65353/udp，chinadns 的国内上游 DNS 设置为 114.114.114.114，chinadns 的国外上游 DNS 设置为 127.0.0.1:60053（即 ss-tunnel，也即 8.8.8.8）；
+pdnsd 监听 0.0.0.0:53/udp，pdnsd 的上游 DNS 设置为 127.0.0.1:65353（即指向 chinadns）。
+注意：
+dns-forwarder 是用来解决国内 ISP 干扰国外 udp 53 解析导致 ss-tunnel 不稳定的问题的，二者选其一。
+也可以用一些国外的非53端口的DNS来做解析，比如OpenDNS的 208.67.222.222:443，这样dns-forwarder和ss-tunnel都不需要了。
+
+######## 1、配置及升级 ########
+# 禁用防火墙
+systemctl stop firewalld.service       #停止firewall
+systemctl disable firewalld.service    #禁止firewall开机启动
+
+######## 2、安装依赖 ########
+2.1 安装编译环境
+yum -y install git gettext gcc autoconf libtool automake make asciidoc xmlto c-ares-devel libev-devel openssl-devel net-tools curl libcurl-devel ipset iproute perl wget gcc bind-utils vim
+
+2.2 TPROXY
+TPROXY 是一个 Linux 内核模块，在 Linux 2.6.28 后进入官方内核。一般正常的发行版都没有裁剪 TPROXY 模块，TPROXY 模块缺失问题主要出现在无线路由固件上。使用以下方法可以检测当前内核是否包含 TPROXY 模块，如果没有，请自行解决。
+# 查找 TPROXY 模块
+find /lib/modules/$(uname -r) -type f -name '*.ko*' | grep 'xt_TPROXY'
+# 正常情况下的输出
+/lib/modules/4.16.8-1-ARCH/kernel/net/netfilter/xt_TPROXY.ko.xz
+
+2.3 haveged
+rpm -ivh http://dl.fedoraproject.org/pub/epel/7/x86_64/Packages/h/haveged-1.9.1-1.el7.x86_64.rpm
+systemctl start haveged
+systemctl enable haveged
+
+2.4 pdnsd
+rpm -ivh http://members.home.nl/p.a.rombouts/pdnsd/releases/pdnsd-1.2.9a-par_sl6.x86_64.rpm
+
+2.5 hev-dns-forwarder
+目前部分 ISP 下使用 ss-tunnel 不稳定, 导致 ChinaDNS 无法正常工作, 根本原因是这类 ISP 的 UDP 不稳定.
+可以使用 DNS-Forwarder 替代 ss-tunnel 作为 ChinaDNS 的上游服务器.
+DNS-Forwarder 将 udp 53 的请求转为 tcp ，这样就可以通过 ss-redir 查询 dns
+# 编译
+git clone git://github.com/aa65535/hev-dns-forwarder.git
+cd hev-dns-forwarder
+make
+cp -af src/hev-dns-forwarder /usr/local/bin/dns-forwarder
+cd ~
+
+2.6 chinadns
+wget https://github.com/shadowsocks/ChinaDNS/releases/download/1.3.2/chinadns-1.3.2.tar.gz
+tar xf chinadns-1.3.2.tar.gz
+cd chinadns-1.3.2
+./configure
+make && make install
+cd ~
+
+2.7 ssr-libev
+# 编译&安装 "Libsodium"
+export LIBSODIUM_VER=1.0.13
+wget https://download.libsodium.org/libsodium/releases/libsodium-$LIBSODIUM_VER.tar.gz
+tar xf libsodium-$LIBSODIUM_VER.tar.gz
+pushd libsodium-$LIBSODIUM_VER
+./configure --prefix=/usr && make
+make install
+popd
+ldconfig
+
+# 编译&安装 "MbedTLS"
+export MBEDTLS_VER=2.6.0
+wget https://tls.mbed.org/download/mbedtls-$MBEDTLS_VER-gpl.tgz
+tar xf mbedtls-$MBEDTLS_VER-gpl.tgz
+pushd mbedtls-$MBEDTLS_VER
+make SHARED=1 CFLAGS=-fPIC
+make DESTDIR=/usr install
+popd
+ldconfig
+
+# 编译&安装 "shadowsocksr-libev"
+git clone https://github.com/shadowsocksr-backup/shadowsocksr-libev.git
+cd shadowsocksr-libev
+./configure --prefix=/usr/local/ssr-libev --with-pcre= && make && make install
+cd /usr/local/ssr-libev/bin
+mv ss-redir ssr-redir
+mv ss-local ssr-local
+ln -sf ssr-local ssr-tunnel
+mv ssr-* /usr/local/bin/
+cd ~
+rm -fr /usr/local/ssr-libev
+
+######## 3、ss-tproxy配置 ########
+3.1 获取
+git clone https://github.com/sancome/ss-tproxy.git
+
+3.2 安装
+cd ss-tproxy
+cp -af ss-tproxy /usr/local/bin/
+cp -af ss-switch /usr/local/bin/
+chown root:root /usr/local/bin/ss-tproxy /usr/local/bin/ss-switch
+chmod +x /usr/local/bin/ss-tproxy /usr/local/bin/ss-switch
+mkdir -m 0755 -p /etc/tproxy
+cp -af pdnsd.conf /etc/tproxy/
+cp -af chnroute.txt /etc/tproxy/
+cp -af chnroute.ipset /etc/tproxy/
+cp -af ss-tproxy.conf /etc/tproxy/
+chown -R root:root /etc/tproxy
+chmod 0644 /etc/tproxy/*
+
+3.3 配置
+# 修改后重启 ss-tproxy 生效
+vim /etc/tproxy/ss-tproxy.conf
+修改开头的 ss/ssr 配置，具体的含义请参考注释（此段配置必须修改）
+iptables_intranet=(192.168.0.0/16)：如果内网网段不是 192.168/16，请修改（可以有多个，空格隔开）
+
+3.4 启动
+ss-tproxy start
+
+3.5 设置自启
+# Systemd方式
+cd ss-tproxy
+cp -af ss-tproxy.service /etc/systemd/system/
+systemctl daemon-reload
+systemctl enable ss-tproxy.service
+
+配置 ss-tproxy 开机自启后容易出现一个问题，那就是必须再次运行 ss-tproxy restart 后才能正常代理（这之前查看运行状态，可能看不出任何问题，都是 running 状态），这是因为 ss-tproxy 启动过早了，且 server_addr 为 Hostname，且没有将 server_addr 中的 Hostname 加入 /etc/hosts 文件而导致的。因为 ss-tproxy 启动时，网络还没准备好，此时根本无法解析这个 Hostname。要避免这个问题，可以采取一个非常简单的方法，那就是将 Hostname 加入到 /etc/hosts 中，如 Hostname 为 node.proxy.net，对应的 IP 为 11.22.33.44，则只需执行 echo "11.22.33.44 node.proxy.net" >> /etc/hosts。不过得注意个问题，那就是假如这个 IP 变了，别忘了修改 /etc/hosts 文件哦。命令行获取某个域名对应的 IP 地址的方法：dig +short HOSTNAME。
+
+3.6 相关命令
+ss-tproxy help：查看帮助
+ss-tproxy start：启动代理
+ss-tproxy stop：关闭代理
+ss-tproxy restart：重启代理
+ss-tproxy status：运行状态
+ss-tproxy current_ip：查看当前 IP（一般为本地 IP）
+ss-tproxy flush_dnsche：清空 dns 缓存（pdnsd 的缓存）
+ss-tproxy update_chnip：更新大陆地址段列表（ipset、chinadns）
+
+3.7 Dig测试
+# 测试 ss-tunnel
+dig @127.0.0.1 -p60053 www.google.com
+
+# 测试 dns-forwarder
+dig @127.0.0.1 -p65300 www.google.com
+
+# 测试 chinadns
+dig @127.0.0.1 -p65353 www.baidu.com
+dig @127.0.0.1 -p65353 www.google.com
+
+# 测试 pdnsd
+dig @127.0.0.1 -p53 www.baidu.com
+dig @127.0.0.1 -p53 www.google.com
+
+3.8 日志文件
+如需详细日志，请打开 ss-tproxy.conf 中相关的 verbose 选项。
+pdnsd：/var/log/pdnsd.log
+chinadns：/var/log/chinadns.log
+ss-redir：/var/log/ss-redir.log
+ss-tunnel：/var/log/ss-tunnel.log
