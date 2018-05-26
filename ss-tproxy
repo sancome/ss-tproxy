@@ -217,6 +217,9 @@ function start() {
         eval "nohup ssr-tunnel $tunnel_params < /dev/null &>> '${tunnel_log}' &"
     fi
 
+    forwarder_params="-b ${forwarder_addr} -p ${forwarder_port} -s ${forwarder_upstream}"
+    nohup dns-forwarder $forwarder_params < /dev/null &>> "${forwarder_log}" &
+
     chinadns_params="-b ${chinadns_addr} -p ${chinadns_port} -s ${chinadns_upstream} -c ${chinadns_chnroute}"
     if [ "${chinadns_mutation}" = 'true' ]; then chinadns_params+=" -m"; fi
     if [ "${chinadns_verbose}" = 'true' ]; then chinadns_params+=" -v"; fi
@@ -238,6 +241,7 @@ function start() {
 function stop() {
     pkill '^pdnsd$' &> /dev/null
     pkill '^chinadns$' &> /dev/null
+    pkill '^dns-forwarder$' &> /dev/null
     pkill '^ss-redir$' &> /dev/null
     pkill '^ss-tunnel$' &> /dev/null
     pkill '^ssr-redir$' &> /dev/null
@@ -261,6 +265,12 @@ function status() {
         echo -e "\e[37mchinadns\e[0m\t[\e[1;32mrunning\e[0m]"
     else
         echo -e "\e[37mchinadns\e[0m\t[\e[1;35mstopped\e[0m]"
+    fi
+
+    if [ $(pgrep -c '^dns-forwarder$') -ge 1 ]; then
+        echo -e "\e[37mdns-forwarder\e[0m\t[\e[1;32mrunning\e[0m]"
+    else
+        echo -e "\e[37mdns-forwarder\e[0m\t[\e[1;35mstopped\e[0m]"
     fi
 
     if [ "${server_use_ssr}" = 'false' ]; then
