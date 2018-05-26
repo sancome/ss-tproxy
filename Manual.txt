@@ -1,33 +1,34 @@
-²Î¿¼ÎÄÕÂ£ºhttps://www.zfl9.com/ss-redir.html
-                  https://github.com/zfl9/ss-tproxy
+å‚è€ƒæ–‡ç« ï¼šhttps://www.zfl9.com/ss-redir.html
+         https://github.com/zfl9/ss-tproxy
 
-²Ù×÷ÏµÍ³£ºCentOS-7-x86_64-Minimal-1611.iso (7.3.1611)
-http://vault.centos.org/7.3.1611/isos/x86_64/CentOS-7-x86_64-Minimal-1611.iso
+æ“ä½œç³»ç»Ÿï¼šCentOS-7-x86_64-Minimal-1611.iso (7.3.1611)
+ä¸‹è½½åœ°å€ï¼šhttp://vault.centos.org/7.3.1611/isos/x86_64/CentOS-7-x86_64-Minimal-1611.iso
 
-»·¾³£º
-ss-redir ¼àÌı 0.0.0.0:60080/tcp&udp£»
-ss-tunnel ¼àÌı 0.0.0.0:60053/tcp&udp£¬ss-tunnel µÄÉÏÓÎ DNS ÉèÖÃÎª 8.8.8.8:53/udp£»
-dns-forwarder ¼àÌı 0.0.0.0:65300/udp£¬dns-forwarder µÄÉÏÓÎ DNS ÉèÖÃÎª 8.8.8.8:53/tcp£»
-chinadns ¼àÌı 0.0.0.0:65353/udp£¬chinadns µÄ¹úÄÚÉÏÓÎ DNS ÉèÖÃÎª 114.114.114.114£¬chinadns µÄ¹úÍâÉÏÓÎ DNS ÉèÖÃÎª 127.0.0.1:60053£¨¼´ ss-tunnel£¬Ò²¼´ 8.8.8.8£©£»
-pdnsd ¼àÌı 0.0.0.0:53/udp£¬pdnsd µÄÉÏÓÎ DNS ÉèÖÃÎª 127.0.0.1:65353£¨¼´Ö¸Ïò chinadns£©¡£
-×¢Òâ£º
-dns-forwarder ÊÇÓÃÀ´½â¾ö¹úÄÚ ISP ¸ÉÈÅ¹úÍâ udp 53 ½âÎöµ¼ÖÂ ss-tunnel ²»ÎÈ¶¨µÄÎÊÌâµÄ£¬¶şÕßÑ¡ÆäÒ»¡£
-Ò²¿ÉÒÔÓÃÒ»Ğ©¹úÍâµÄ·Ç53¶Ë¿ÚµÄDNSÀ´×ö½âÎö£¬±ÈÈçOpenDNSµÄ 208.67.222.222:443£¬ÕâÑùdns-forwarderºÍss-tunnel¶¼²»ĞèÒªÁË¡£
+ç¯å¢ƒï¼š
+ss-redir ç›‘å¬ 0.0.0.0:60080/tcp&udpï¼›
+ss-tunnel ç›‘å¬ 0.0.0.0:60053/tcp&udpï¼Œss-tunnel çš„ä¸Šæ¸¸ DNS è®¾ç½®ä¸º 8.8.8.8:53/udpï¼›
+dns-forwarder ç›‘å¬ 0.0.0.0:65300/udpï¼Œdns-forwarder çš„ä¸Šæ¸¸ DNS è®¾ç½®ä¸º 8.8.8.8:53/tcpï¼›
+chinadns ç›‘å¬ 0.0.0.0:65353/udpï¼Œchinadns çš„å›½å†…ä¸Šæ¸¸ DNS è®¾ç½®ä¸º 114.114.114.114ï¼Œchinadns çš„å›½å¤–ä¸Šæ¸¸ DNS è®¾ç½®ä¸º 127.0.0.1:60053
+pdnsd ç›‘å¬ 0.0.0.0:53/udpï¼Œpdnsd çš„ä¸Šæ¸¸ DNS è®¾ç½®ä¸º 127.0.0.1:65353ï¼ˆå³æŒ‡å‘ chinadnsï¼‰ã€‚
+æ³¨æ„ï¼š
+dns-forwarder æ˜¯ç”¨æ¥è§£å†³å›½å†… ISP å¹²æ‰°å›½å¤– udp 53 è§£æå¯¼è‡´ ss-tunnel ä¸ç¨³å®šçš„é—®é¢˜çš„ï¼ŒäºŒè€…é€‰å…¶ä¸€ã€‚
+ä¹Ÿå¯ä»¥ç”¨ä¸€äº›å›½å¤–çš„é53ç«¯å£çš„DNSæ¥åšè§£æï¼Œæ¯”å¦‚OpenDNSçš„ 208.67.222.222:443ï¼Œè¿™æ ·dns-forwarderå’Œss-tunneléƒ½ä¸éœ€è¦äº†ã€‚
 
-######## 1¡¢ÅäÖÃ¼°Éı¼¶ ########
-# ½ûÓÃ·À»ğÇ½
-systemctl stop firewalld.service       #Í£Ö¹firewall
-systemctl disable firewalld.service    #½ûÖ¹firewall¿ª»úÆô¶¯
+######## 1ã€é…ç½®åŠå‡çº§ ########
+# ç¦ç”¨é˜²ç«å¢™
+systemctl stop firewalld.service       #åœæ­¢firewall
+systemctl disable firewalld.service    #ç¦æ­¢firewallå¼€æœºå¯åŠ¨
 
-######## 2¡¢°²×°ÒÀÀµ ########
-2.1 °²×°±àÒë»·¾³
-yum -y install git gettext gcc autoconf libtool automake make asciidoc xmlto c-ares-devel libev-devel openssl-devel net-tools curl libcurl-devel ipset iproute perl wget gcc bind-utils vim
+######## 2ã€å®‰è£…ä¾èµ– ########
+2.1 å®‰è£…ç¼–è¯‘ç¯å¢ƒ
+yum -y install git gettext gcc autoconf libtool automake make asciidoc xmlto c-ares-devel libev-devel openssl-devel
+yum -y install net-tools curl libcurl-devel ipset iproute perl wget gcc bind-utils vim
 
 2.2 TPROXY
-TPROXY ÊÇÒ»¸ö Linux ÄÚºËÄ£¿é£¬ÔÚ Linux 2.6.28 ºó½øÈë¹Ù·½ÄÚºË¡£Ò»°ãÕı³£µÄ·¢ĞĞ°æ¶¼Ã»ÓĞ²Ã¼ô TPROXY Ä£¿é£¬TPROXY Ä£¿éÈ±Ê§ÎÊÌâÖ÷Òª³öÏÖÔÚÎŞÏßÂ·ÓÉ¹Ì¼şÉÏ¡£Ê¹ÓÃÒÔÏÂ·½·¨¿ÉÒÔ¼ì²âµ±Ç°ÄÚºËÊÇ·ñ°üº¬ TPROXY Ä£¿é£¬Èç¹ûÃ»ÓĞ£¬Çë×ÔĞĞ½â¾ö¡£
-# ²éÕÒ TPROXY Ä£¿é
+TPROXY æ˜¯ä¸€ä¸ª Linux å†…æ ¸æ¨¡å—ï¼Œåœ¨ Linux 2.6.28 åè¿›å…¥å®˜æ–¹å†…æ ¸ï¼Œä½¿ç”¨ä»¥ä¸‹æ–¹æ³•å¯ä»¥æ£€æµ‹å½“å‰å†…æ ¸æ˜¯å¦åŒ…å« TPROXY æ¨¡å—ã€‚
+# æŸ¥æ‰¾ TPROXY æ¨¡å—
 find /lib/modules/$(uname -r) -type f -name '*.ko*' | grep 'xt_TPROXY'
-# Õı³£Çé¿öÏÂµÄÊä³ö
+# æ­£å¸¸æƒ…å†µä¸‹çš„è¾“å‡º
 /lib/modules/4.16.8-1-ARCH/kernel/net/netfilter/xt_TPROXY.ko.xz
 
 2.3 haveged
@@ -39,10 +40,10 @@ systemctl enable haveged
 rpm -ivh http://members.home.nl/p.a.rombouts/pdnsd/releases/pdnsd-1.2.9a-par_sl6.x86_64.rpm
 
 2.5 hev-dns-forwarder
-Ä¿Ç°²¿·Ö ISP ÏÂÊ¹ÓÃ ss-tunnel ²»ÎÈ¶¨, µ¼ÖÂ ChinaDNS ÎŞ·¨Õı³£¹¤×÷, ¸ù±¾Ô­ÒòÊÇÕâÀà ISP µÄ UDP ²»ÎÈ¶¨.
-¿ÉÒÔÊ¹ÓÃ DNS-Forwarder Ìæ´ú ss-tunnel ×÷Îª ChinaDNS µÄÉÏÓÎ·şÎñÆ÷.
-DNS-Forwarder ½« udp 53 µÄÇëÇó×ªÎª tcp £¬ÕâÑù¾Í¿ÉÒÔÍ¨¹ı ss-redir ²éÑ¯ dns
-# ±àÒë
+ç›®å‰éƒ¨åˆ† ISP ä¸‹ä½¿ç”¨ ss-tunnel ä¸ç¨³å®š, å¯¼è‡´ ChinaDNS æ— æ³•æ­£å¸¸å·¥ä½œ, æ ¹æœ¬åŸå› æ˜¯è¿™ç±» ISP çš„ UDP ä¸ç¨³å®š.
+å¯ä»¥ä½¿ç”¨ DNS-Forwarder æ›¿ä»£ ss-tunnel ä½œä¸º ChinaDNS çš„ä¸Šæ¸¸æœåŠ¡å™¨.
+DNS-Forwarder å°† udp 53 çš„è¯·æ±‚è½¬ä¸º tcp ï¼Œè¿™æ ·å°±å¯ä»¥é€šè¿‡ ss-redir æŸ¥è¯¢ dns
+# ç¼–è¯‘
 git clone git://github.com/aa65535/hev-dns-forwarder.git
 cd hev-dns-forwarder
 make
@@ -58,7 +59,7 @@ make && make install
 cd ~
 
 2.7 ssr-libev
-# ±àÒë&°²×° "Libsodium"
+# ç¼–è¯‘&å®‰è£… "Libsodium"
 export LIBSODIUM_VER=1.0.13
 wget https://download.libsodium.org/libsodium/releases/libsodium-$LIBSODIUM_VER.tar.gz
 tar xf libsodium-$LIBSODIUM_VER.tar.gz
@@ -68,7 +69,7 @@ make install
 popd
 ldconfig
 
-# ±àÒë&°²×° "MbedTLS"
+# ç¼–è¯‘&å®‰è£… "MbedTLS"
 export MBEDTLS_VER=2.6.0
 wget https://tls.mbed.org/download/mbedtls-$MBEDTLS_VER-gpl.tgz
 tar xf mbedtls-$MBEDTLS_VER-gpl.tgz
@@ -78,7 +79,7 @@ make DESTDIR=/usr install
 popd
 ldconfig
 
-# ±àÒë&°²×° "shadowsocksr-libev"
+# ç¼–è¯‘&å®‰è£… "shadowsocksr-libev"
 git clone https://github.com/shadowsocksr-backup/shadowsocksr-libev.git
 cd shadowsocksr-libev
 ./configure --prefix=/usr/local/ssr-libev --with-pcre= && make && make install
@@ -90,11 +91,11 @@ mv ssr-* /usr/local/bin/
 cd ~
 rm -fr /usr/local/ssr-libev
 
-######## 3¡¢ss-tproxyÅäÖÃ ########
-3.1 »ñÈ¡
+######## 3ã€ss-tproxyé…ç½® ########
+3.1 è·å–
 git clone https://github.com/sancome/ss-tproxy.git
 
-3.2 °²×°
+3.2 å®‰è£…
 cd ss-tproxy
 cp -af ss-tproxy /usr/local/bin/
 cp -af ss-switch /usr/local/bin/
@@ -108,52 +109,54 @@ cp -af ss-tproxy.conf /etc/tproxy/
 chown -R root:root /etc/tproxy
 chmod 0644 /etc/tproxy/*
 
-3.3 ÅäÖÃ
-# ĞŞ¸ÄºóÖØÆô ss-tproxy ÉúĞ§
+3.3 é…ç½®
+# ä¿®æ”¹åé‡å¯ ss-tproxy ç”Ÿæ•ˆ
 vim /etc/tproxy/ss-tproxy.conf
-ĞŞ¸Ä¿ªÍ·µÄ ss/ssr ÅäÖÃ£¬¾ßÌåµÄº¬ÒåÇë²Î¿¼×¢ÊÍ£¨´Ë¶ÎÅäÖÃ±ØĞëĞŞ¸Ä£©
-iptables_intranet=(192.168.0.0/16)£ºÈç¹ûÄÚÍøÍø¶Î²»ÊÇ 192.168/16£¬ÇëĞŞ¸Ä£¨¿ÉÒÔÓĞ¶à¸ö£¬¿Õ¸ñ¸ô¿ª£©
+ä¿®æ”¹å¼€å¤´çš„ ss/ssr é…ç½®ï¼Œå…·ä½“çš„å«ä¹‰è¯·å‚è€ƒæ³¨é‡Šï¼ˆæ­¤æ®µé…ç½®å¿…é¡»ä¿®æ”¹ï¼‰
+iptables_intranet=(192.168.0.0/16)ï¼šå¦‚æœå†…ç½‘ç½‘æ®µä¸æ˜¯ 192.168/16ï¼Œè¯·ä¿®æ”¹ï¼ˆå¯ä»¥æœ‰å¤šä¸ªï¼Œç©ºæ ¼éš”å¼€ï¼‰
 
-3.4 Æô¶¯
+3.4 å¯åŠ¨
 ss-tproxy start
 
-3.5 ÉèÖÃ×ÔÆô
-# Systemd·½Ê½
+3.5 è®¾ç½®è‡ªå¯
+# Systemdæ–¹å¼
 cd ss-tproxy
 cp -af ss-tproxy.service /etc/systemd/system/
 systemctl daemon-reload
 systemctl enable ss-tproxy.service
 
-ÅäÖÃ ss-tproxy ¿ª»ú×ÔÆôºóÈİÒ×³öÏÖÒ»¸öÎÊÌâ£¬ÄÇ¾ÍÊÇ±ØĞëÔÙ´ÎÔËĞĞ ss-tproxy restart ºó²ÅÄÜÕı³£´úÀí£¨ÕâÖ®Ç°²é¿´ÔËĞĞ×´Ì¬£¬¿ÉÄÜ¿´²»³öÈÎºÎÎÊÌâ£¬¶¼ÊÇ running ×´Ì¬£©£¬ÕâÊÇÒòÎª ss-tproxy Æô¶¯¹ıÔçÁË£¬ÇÒ server_addr Îª Hostname£¬ÇÒÃ»ÓĞ½« server_addr ÖĞµÄ Hostname ¼ÓÈë /etc/hosts ÎÄ¼ş¶øµ¼ÖÂµÄ¡£ÒòÎª ss-tproxy Æô¶¯Ê±£¬ÍøÂç»¹Ã»×¼±¸ºÃ£¬´ËÊ±¸ù±¾ÎŞ·¨½âÎöÕâ¸ö Hostname¡£Òª±ÜÃâÕâ¸öÎÊÌâ£¬¿ÉÒÔ²ÉÈ¡Ò»¸ö·Ç³£¼òµ¥µÄ·½·¨£¬ÄÇ¾ÍÊÇ½« Hostname ¼ÓÈëµ½ /etc/hosts ÖĞ£¬Èç Hostname Îª node.proxy.net£¬¶ÔÓ¦µÄ IP Îª 11.22.33.44£¬ÔòÖ»ĞèÖ´ĞĞ echo "11.22.33.44 node.proxy.net" >> /etc/hosts¡£²»¹ıµÃ×¢Òâ¸öÎÊÌâ£¬ÄÇ¾ÍÊÇ¼ÙÈçÕâ¸ö IP ±äÁË£¬±ğÍüÁËĞŞ¸Ä /etc/hosts ÎÄ¼şÅ¶¡£ÃüÁîĞĞ»ñÈ¡Ä³¸öÓòÃû¶ÔÓ¦µÄ IP µØÖ·µÄ·½·¨£ºdig +short HOSTNAME¡£
+é…ç½® ss-tproxy å¼€æœºè‡ªå¯åå®¹æ˜“å‡ºç°ä¸€ä¸ªé—®é¢˜ï¼Œé‚£å°±æ˜¯å¿…é¡»å†æ¬¡è¿è¡Œ ss-tproxy restart åæ‰èƒ½æ­£å¸¸ä»£ç†ï¼ˆè¿™ä¹‹å‰æŸ¥çœ‹è¿è¡ŒçŠ¶æ€ï¼Œå¯èƒ½çœ‹ä¸å‡ºä»»ä½•é—®é¢˜ï¼Œ
+éƒ½æ˜¯ running çŠ¶æ€ï¼‰ï¼Œè¿™æ˜¯å› ä¸º ss-tproxy å¯åŠ¨æ—¶ç½‘ç»œè¿˜æ²¡å‡†å¤‡å¥½ï¼Œæ­¤æ—¶æ ¹æœ¬æ— æ³•è§£æè¿™ä¸ª Hostnameã€‚è¦é¿å…è¿™ä¸ªé—®é¢˜ï¼Œå¯ä»¥é‡‡å–ä¸€ä¸ªéå¸¸ç®€å•çš„æ–¹æ³•ï¼Œ
+é‚£å°±æ˜¯ server_addr ç”¨IPåœ°å€è€Œä¸è¦ç”¨åŸŸåã€‚
 
-3.6 Ïà¹ØÃüÁî
-ss-tproxy help£º²é¿´°ïÖú
-ss-tproxy start£ºÆô¶¯´úÀí
-ss-tproxy stop£º¹Ø±Õ´úÀí
-ss-tproxy restart£ºÖØÆô´úÀí
-ss-tproxy status£ºÔËĞĞ×´Ì¬
-ss-tproxy current_ip£º²é¿´µ±Ç° IP£¨Ò»°ãÎª±¾µØ IP£©
-ss-tproxy flush_dnsche£ºÇå¿Õ dns »º´æ£¨pdnsd µÄ»º´æ£©
-ss-tproxy update_chnip£º¸üĞÂ´óÂ½µØÖ·¶ÎÁĞ±í£¨ipset¡¢chinadns£©
+3.6 ç›¸å…³å‘½ä»¤
+ss-tproxy helpï¼šæŸ¥çœ‹å¸®åŠ©
+ss-tproxy startï¼šå¯åŠ¨ä»£ç†
+ss-tproxy stopï¼šå…³é—­ä»£ç†
+ss-tproxy restartï¼šé‡å¯ä»£ç†
+ss-tproxy statusï¼šè¿è¡ŒçŠ¶æ€
+ss-tproxy current_ipï¼šæŸ¥çœ‹å½“å‰ IPï¼ˆä¸€èˆ¬ä¸ºæœ¬åœ° IPï¼‰
+ss-tproxy flush_dnscheï¼šæ¸…ç©º dns ç¼“å­˜ï¼ˆpdnsd çš„ç¼“å­˜ï¼‰
+ss-tproxy update_chnipï¼šæ›´æ–°å¤§é™†åœ°å€æ®µåˆ—è¡¨ï¼ˆipsetã€chinadnsï¼‰
 
-3.7 Dig²âÊÔ
-# ²âÊÔ ss-tunnel
+3.7 Digæµ‹è¯•
+# æµ‹è¯• ss-tunnel
 dig @127.0.0.1 -p60053 www.google.com
 
-# ²âÊÔ dns-forwarder
+# æµ‹è¯• dns-forwarder
 dig @127.0.0.1 -p65300 www.google.com
 
-# ²âÊÔ chinadns
+# æµ‹è¯• chinadns
 dig @127.0.0.1 -p65353 www.baidu.com
 dig @127.0.0.1 -p65353 www.google.com
 
-# ²âÊÔ pdnsd
+# æµ‹è¯• pdnsd
 dig @127.0.0.1 -p53 www.baidu.com
 dig @127.0.0.1 -p53 www.google.com
 
-3.8 ÈÕÖ¾ÎÄ¼ş
-ÈçĞèÏêÏ¸ÈÕÖ¾£¬Çë´ò¿ª ss-tproxy.conf ÖĞÏà¹ØµÄ verbose Ñ¡Ïî¡£
-pdnsd£º/var/log/pdnsd.log
-chinadns£º/var/log/chinadns.log
-ss-redir£º/var/log/ss-redir.log
-ss-tunnel£º/var/log/ss-tunnel.log
+3.8 æ—¥å¿—æ–‡ä»¶
+å¦‚éœ€è¯¦ç»†æ—¥å¿—ï¼Œè¯·æ‰“å¼€ ss-tproxy.conf ä¸­ç›¸å…³çš„ verbose é€‰é¡¹ã€‚
+pdnsdï¼š/var/log/pdnsd.log
+chinadnsï¼š/var/log/chinadns.log
+ss-redirï¼š/var/log/ss-redir.log
+ss-tunnelï¼š/var/log/ss-tunnel.log
